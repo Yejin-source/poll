@@ -3,12 +3,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>insertPoolForm</title>
+<title>insertPollForm</title>
 </head>
 <body>
 	<h1>투표 프로그램</h1>
 	<hr>
-	<h2>설문작성</h2>
+	<h2>설문 작성</h2>
 	<form method="post" action="/poll/insertPollAction.jsp">
 		<table border="1">
 			<tr>

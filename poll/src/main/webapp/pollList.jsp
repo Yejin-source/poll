@@ -2,6 +2,7 @@
 <%@ page import = "dto.*" %>
 <%@ page import = "model.*" %>
 <%@ page import = "java.util.*" %>
+<%@ page import = "java.time.LocalDate" %>
 
 <!-- Controller -->
 <%
@@ -16,16 +17,34 @@
 	paging.setCurrentPage(currentPage);
 	paging.setRowPerPage(rowPerPage);
 	
+			
 	QuestionDao questionDao = new QuestionDao();
-	ArrayList<Question> list = questionDao.selectQuestionList(paging);
+	int lastPage = paging.getLastPage(questionDao.getTotal());
+	ArrayList<HashMap<String, Object>> list = questionDao.selectQuestionList(paging);
 	
 	
 	// 오늘 날짜 구하기
-	Calendar c = Calendar.getInstance();
-	int todayYear = c.get(Calendar.YEAR);
-	int todayMonth = c.get(Calendar.MONTH) - 1;
-	int todayDate = c.get(Calendar.DATE);
+	Calendar today = Calendar.getInstance();
+	// yyyy-mm-dd
+	int year = today.get(Calendar.YEAR);
+	int month = today.get(Calendar.MONTH) + 1;
+	int date = today.get(Calendar.DATE);
 	
+	String strToday = year+"-";
+	
+	if(month < 10) {
+		strToday = strToday + "0" + month + "-";
+	} else {
+		strToday = strToday + month + "-";
+	}
+	
+	if(date < 10) {
+		strToday = strToday + "0" + date;
+	} else {
+		strToday = strToday + date;
+	}
+	
+	System.out.println("strToday: " + strToday);
 	
 %>
 
@@ -41,48 +60,126 @@
 	<!-- foreach문 ArrayList<Question> list 출력 
 	링크(startdate <= 오늘날짜 <= enddate) 투표 시작전, 투표 종료, 투표하기 -->
 	
-	<form>
-		<table border="1">
+	<table border="1">
 		<tr>
 			<td>번호</td>
 			<td>제목</td>
-			<td>시작 날짜</td>
-			<td>종료 날짜</td>
+			<td>시작일</td>
+			<td>종료일</td>
+			<td>투표 현황</td>
 			<td>투표</td>
+			<td>삭제</td>
+			<td>수정</td>
+			<td>종료일수정</td>
+			<td>결과</td>
 		</tr>
+		
+		<%
+			for(HashMap<String, Object> map : list) {
+				String startdate = (String)map.get("startdate");
+				String enddate = (String)map.get("enddate");
+		%>
+
+				<tr>
+					<td><%=map.get("num")%></td>
+					<td><%=map.get("title")%></td>
+					<td><%=map.get("startdate")%></td>
+					<td><%=map.get("enddate")%></td>
+					<td><%=map.get("cnt")%></td>
+					<td>
+						<%
+							// 오늘 날짜 - 시작일 : 양수 && 종료일 - 오늘 날짜 : 양수
+							if(strToday.compareTo(startdate) < 0) {
+						%>
+								투표이전
+						<%		
+							} else if(strToday.compareTo(startdate) > 0) {
+						%>
+								투표종료
+						<%		
+							} else{
+						%>
+								<a href="">투표하기</a>
+						<%		
+							}
+						%>
+					</td>
+					<td>
+						<%
+							if((Integer)(map.get("cnt")) > 0) {
+						%>
+								삭제불가 
+						<%		
+							} else {
+						%>
+								<a href="">삭제하기</a>
+						<%		
+							}
+						%>
+					</td>
+					<td>
+						<%
+							if((Integer)(map.get("cnt")) > 0) {
+						%>
+								수정불가
+						<%		
+							} else {
+						%>
+								<a href="">수정</a>
+						<%		
+							}
+						%>
+					</td>
+					<td>
+						<%
+							if(enddate.compareTo(strToday) >= 0) {
+						%>
+								<a href="">수정</a>
+						<%		
+							} else {
+						%>
+								수정불가
+						<%		
+							}
+						%>
+					</td>
+					<td>
+						<%
+							if(strToday.compareTo(enddate) > 0) {
+						%>
+								<a href="">결과보기</a>
+						<%		
+							} else {
+						%>
+								투표진행중
+						<%		
+							}
+						%>
+					</td>
+				</tr>
+		<%	
+			}
+		%>
+	</table>
+	
+	<!-- 페이징 -->
 	<%
-		for(Question q : list) {
-	%>	
-			<tr>
-				<td><%=q.getNum()%></td>
-				<td><%=q.getTitle()%></td>
-				<td><%=q.getStartdate()%></td>
-				<td><%=q.getEnddate()%></td>
-				<td>
-					<%
-						if(Integer.valueOf(q.getStartdate().substring(0, 4)) <= todayYear
-								&& Integer.valueOf(q.getStartdate().substring(5, 7)) <= todayMonth
-								&& Integer.valueOf(q.getStartdate().substring(8)) <= todayDate
-								
-							|| Integer.valueOf(q.getEnddate().substring(0, 4)) >= todayYear
-								&& Integer.valueOf(q.getEnddate().substring(5, 7)) >= todayMonth
-								&& Integer.valueOf(q.getEnddate().substring(8)) >= todayDate) {
-					%>
-							<a href="">투표하기</a>
-					<%				
-						} else{
-					%>
-							<a>투표기간 X</a>
-					<%		
-						}
-					%>
-					
-				</td>
-			</tr>
-	<%	
+	 	if(currentPage > 1) {
+	%>	 
+			<a href="/poll/pollList.jsp?currentPage=<%=currentPage-1%>">[이전]</a>
+	<%	 
 		}
 	%>
-		</table>
-	</form>
+	
+	[<%=currentPage%>]
+	
+	<%
+	 	if(currentPage < lastPage) {
+	%>	 
+			<a href="/poll/pollList.jsp?currentPage=<%=currentPage+1%>">[다음]</a>
+	<%	 
+		}
+	%>
+	
 </body>
 </html>
