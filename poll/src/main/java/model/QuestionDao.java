@@ -14,11 +14,10 @@ import dto.Question;
 // Table : question crud
 public class QuestionDao {
 	
-	public ArrayList<Question> selectQuestionList(Paging p) throws ClassNotFoundException, SQLException {
-		ArrayList<Question> list = new ArrayList<>();
-		// ? p.getBeginRow();
-		// ? p.getRowPerPage();				
+	// 전체 개수
+	public int getTotalCnt() throws ClassNotFoundException, SQLException {
 		
+		int totalCnt = 0;
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -26,16 +25,51 @@ public class QuestionDao {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
-		// 페이징 쿼리
+		String sql = "SELECT COUNT(*) cnt FROM question";
+		stmt = conn.prepareStatement(sql);
+		System.out.println("QuestionDao stmt: " + stmt);
+		rs = stmt.executeQuery();
+		
+		conn.close();
+		return totalCnt;
+	}
+	
+	
+	// 리스트
+	public ArrayList<Question> selectQuestionList(Paging p) throws ClassNotFoundException, SQLException {
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
+		
+		
 		String sql = "SELECT num, title, startdate, enddate, createdate, type FROM question ORDER BY num DESC LIMIT ?, ?";
 		stmt = conn.prepareStatement(sql);
-		
-		// System.out.println("pollList stmt: " + stmt);
-		// rs = stmt.executeQuery();
+		stmt.setInt(1, p.getBeginRow());
+		stmt.setInt(2, p.getRowPerPage());
+		System.out.println("QuestionDao stmt: " + stmt);
+		rs = stmt.executeQuery();
 	
 		
+		ArrayList<Question> list = new ArrayList<>();
+		while(rs.next()) {
+			Question q = new Question();
+			q.setNum(rs.getInt("num"));
+			q.setTitle(rs.getString("title"));
+			q.setStartdate(rs.getString("startdate"));
+			q.setEnddate(rs.getString("enddate"));
+			q.setCreatedate(rs.getString("createdate"));
+			q.setType(rs.getInt("type"));
+			list.add(q);
+		}
+		
+		conn.close();
 		return list;
 	}
+	
 	
 	// 입력 후 자동으로 생성된 키값을 반환값으로 받을 것임
 	public int insertQuestion(Question question) throws ClassNotFoundException, SQLException {
@@ -61,6 +95,6 @@ public class QuestionDao {
 			pk = rs.getInt(1);
 		}
 		conn.close();
-		return 0;
+		return pk;
 	}
 }

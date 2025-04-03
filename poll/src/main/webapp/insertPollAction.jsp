@@ -25,7 +25,6 @@
 	}
 	System.out.println(contentList); // ArrayList는 바로 출력 가능
 	
-	
 	Question question = new Question();
 	question.setTitle(title);
 	question.setStartdate(startdate);
@@ -56,7 +55,5 @@
 	
 	// view가 필요 없음 -> 새로운 요쳥 pollList.jsp
 	response.sendRedirect("/poll/pollList.jsp");
-	
-	
 	
 %>

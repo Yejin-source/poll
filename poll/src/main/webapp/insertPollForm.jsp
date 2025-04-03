@@ -6,7 +6,7 @@
 <title>insertPoolForm</title>
 </head>
 <body>
-	<h1>투표프로그램</h1>
+	<h1>투표 프로그램</h1>
 	<hr>
 	<h2>설문작성</h2>
 	<form method="post" action="/poll/insertPollAction.jsp">
