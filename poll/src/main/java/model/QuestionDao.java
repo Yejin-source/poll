@@ -123,4 +123,36 @@ public class QuestionDao {
 		return row;
 	}
 	
+	
+	// 전체 수정 메서드
+	// public int updateQuestion
+	
+	
+	// 하나의 num 가져오기
+	public Question selectQuestionOne(int num) throws ClassNotFoundException, SQLException {
+		Question q = null;
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		String sql = "SELECT * FROM question WHERE num = ?";
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
+		
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, num);
+		rs = stmt.executeQuery();
+		
+		if(rs.next()) {
+			q = new Question();
+			q.setNum(num);
+			q.setTitle(rs.getString("title"));
+			q.setStartdate(rs.getString("startDate"));
+			q.setEnddate(rs.getString("enddate"));
+			q.setType(rs.getInt("type")); // checkbox or radio
+		}
+		return q;
+	}
+	
 }

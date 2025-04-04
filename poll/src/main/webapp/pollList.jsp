@@ -52,15 +52,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>pollList</title>
+	<meta charset="UTF-8">
+	<title>pollList</title>
+	<!-- Latest compiled and minified CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	
+	<!-- Latest compiled JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+	<!-- nav.jsp 인클루드 | include page 속성값에 프로젝트명(context명) 포함 X -->
+	<div>
+		<jsp:include page="/inc/nav.jsp"></jsp:include>
+	</div>
+	
 	<h1>설문리스트</h1>
 	<!-- foreach문 ArrayList<Question> list 출력 
 	링크(startdate <= 오늘날짜 <= enddate) 투표 시작전, 투표 종료, 투표하기 -->
 	
-	<table border="1">
+	<table class="table table-bordered table-hover">
 		<tr>
 			<td>번호</td>
 			<td>제목</td>
@@ -85,7 +95,7 @@
 					<td><%=map.get("title")%></td>
 					<td><%=map.get("startdate")%></td>
 					<td><%=map.get("enddate")%></td>
-					<td><%=map.get("cnt")%></td>
+					<td><%=map.get("cnt")%>번</td>
 					<td>
 						<%
 							// 오늘 날짜 - 시작일 : 양수 && 종료일 - 오늘 날짜 : 양수
@@ -93,13 +103,13 @@
 						%>
 								투표이전
 						<%		
-							} else if(strToday.compareTo(startdate) > 0) {
+							} else if(strToday.compareTo(enddate) > 0) {
 						%>
 								투표종료
 						<%		
 							} else{
 						%>
-								<a href="">투표하기</a>
+								<a href='/poll/updateItemForm.jsp?qnum=<%=map.get("num")%>'>투표하기</a>
 						<%		
 							}
 						%>
@@ -147,7 +157,7 @@
 						<%
 							if(strToday.compareTo(enddate) > 0) {
 						%>
-								<a href="">결과보기</a>
+								<a href='/poll/questionOneResult.jsp?qnum=<%=map.get("num")%>'>결과보기</a>
 						<%		
 							} else {
 						%>
