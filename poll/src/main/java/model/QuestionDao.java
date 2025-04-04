@@ -78,6 +78,33 @@ public class QuestionDao {
 	}
 	
 	
+	public Question selectQuestionOne(int num) throws ClassNotFoundException, SQLException {
+		Question q = null;
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		String sql = "SELECT num, title, startdate, enddate, createdate, type FROM question WHERE num = ?";
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
+		
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, num);
+		rs = stmt.executeQuery();
+		
+		if(rs.next()) {
+			q = new Question();
+			q.setNum(num);
+			q.setTitle(rs.getString("title"));
+			q.setStartdate(rs.getString("startDate"));
+			q.setEnddate(rs.getString("enddate"));
+			q.setType(rs.getInt("type")); // checkbox or radio
+		}
+		return q;
+	}
+	
+	
 	// 입력 후 자동으로 생성된 키값을 반환값으로 받기
 	public int insertQuestion(Question question) throws ClassNotFoundException, SQLException {
 		int pk = 0;
@@ -125,34 +152,43 @@ public class QuestionDao {
 	
 	
 	// 전체 수정 메서드
-	// public int updateQuestion
-	
-	
-	// 하나의 num 가져오기
-	public Question selectQuestionOne(int num) throws ClassNotFoundException, SQLException {
-		Question q = null;
-		
+	public int updateQuestion(Question u) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rs = null;
 		
-		String sql = "SELECT * FROM question WHERE num = ?";
+		String sql = "UPDATE question SET title = ? startdate = ? enddate = ? type = ? WHERE num = ?";
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
 		stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, num);
-		rs = stmt.executeQuery();
+		stmt.setString(1, u.getTitle());
+		stmt.setString(2, u.getStartdate());
+		stmt.setString(3, u.getEnddate());
+		stmt.setInt(4, u.getType());
+		stmt.setInt(5, u.getNum());
 		
-		if(rs.next()) {
-			q = new Question();
-			q.setNum(num);
-			q.setTitle(rs.getString("title"));
-			q.setStartdate(rs.getString("startDate"));
-			q.setEnddate(rs.getString("enddate"));
-			q.setType(rs.getInt("type")); // checkbox or radio
-		}
-		return q;
+		int row = stmt.executeUpdate();
+		conn.close();
+		return row;
+	}
+	
+	
+	// 종료 날짜 수정 메서드
+	public int updateEnddate(Question ue) throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		String sql = "UPDATE question SET enddate = ? WHERE num = ?";
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
+		
+		stmt = conn.prepareStatement(sql);
+		stmt.setString(1, ue.getEnddate());
+		stmt.setInt(2, ue.getNum());
+		
+		int row = stmt.executeUpdate();
+		conn.close();
+		return row;
 	}
 	
 }

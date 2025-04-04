@@ -135,7 +135,7 @@
 						<%		
 							} else {
 						%>
-								<a href="">수정</a>
+								<a href='/poll/updatePollForm.jsp?qnum=<%=map.get("num")%>'>수정하기</a>
 						<%		
 							}
 						%>
@@ -144,7 +144,7 @@
 						<%
 							if(enddate.compareTo(strToday) >= 0) {
 						%>
-								<a href="">수정</a>
+								<a href="">종료일 수정</a>
 						<%		
 							} else {
 						%>

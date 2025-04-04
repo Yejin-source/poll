@@ -50,7 +50,7 @@
 					%>
 							<div>
 								<%
-									if(question.getType() == 1) { // type = radio
+									if(question.getType() == 0) { // type = radio
 								%>
 										<input type="radio" value="<%=i.getInum()%>" name="inum">
 								<%		

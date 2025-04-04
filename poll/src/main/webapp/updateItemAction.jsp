@@ -6,8 +6,8 @@
 	String[] inumArr = request.getParameterValues("inum");
 	// inumArr 개수만큼 count++ 하는 메서드를 호출
 	ItemDao itemDao = new ItemDao();
-	for(String s : inumArr) {
-		itemDao.updateItemCountPlus(qnum, Integer.parseInt("inum"));
+	for(String inum : inumArr) {
+		itemDao.updateItemCountPlus(qnum, Integer.parseInt(inum));
 	}
 	
 

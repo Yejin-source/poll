@@ -37,57 +37,39 @@ public class ItemDao {
 	
 	
 	// 투표한 인원이 있는지 확인하는 메서드
-	public int sumCount(Item c) throws ClassNotFoundException, SQLException {
+	public int selectItemCountByQnum(int qnum) throws ClassNotFoundException, SQLException {
+		int count = 0;
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rs = null;
+		ResultSet rs = null; 
 		
-		String sql = "SELECT qnum, SUM(count) FROM item GROUP BY qnum HAVING qnum = ?";
+		String sql = "SELECT SUM(count) cnt FROM item GROUP BY qnum HAVING qnum = ?"; 
 		// SUM(count): 보기(content)를 선택한 수의 합 | HAVING: 집계 함수 결과를 필터링할 때 사용
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
 		stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, c.getQnum());
+		stmt.setInt(1, qnum);
 		rs = stmt.executeQuery();
-		
-		rs.next();
-		int count = rs.getInt("count");
-		
-		conn.close();
-		return count;	
+		if(rs.next()) {
+			count = rs.getInt("cnt");
+		}
+		return count;
 	}
 
-	
-	// 삭제 메서드
-	public int deleteItem(Item d) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		
-		String sql = "DELETE FROM item WHERE qnum = ?";
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
-		
-		stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, d.getQnum());
-		
-		int row = stmt.executeUpdate();
-		conn.close();
-		return row;
-	}
-	
 	
 	// udpateItemForm, questionOneResult
 	public ArrayList<Item> selectItemListByQnum(int qnum) throws ClassNotFoundException, SQLException {
 		// size를 return하는 것이 더 편함 
 		// null값은 안 만들 수 있으면 안 만드는 게 좋음
+		
 		ArrayList<Item> list = new ArrayList<Item>();
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null; 
 		
-		String sql = "SELECT * FROM item WHERE qnum = ? ORDER BY inum ASC"; // ASC도 써주기
+		String sql = "SELECT qnum, inum, content, count FROM item WHERE qnum = ? ORDER BY inum ASC"; // ASC도 써주기
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
 		stmt = conn.prepareStatement(sql);
@@ -104,9 +86,9 @@ public class ItemDao {
 		}
 		return list;
 	}
+		
 	
-	
-	//
+	// 투표 수 카운트하는 메서드
 	public void updateItemCountPlus(int qnum, int inum) throws ClassNotFoundException, SQLException { // 반환값이 필요하지 않으니까 void로
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
@@ -127,24 +109,20 @@ public class ItemDao {
 	}
 	
 	
-	
-	// 
-	public int selectItemCountByQnum(int qnum) throws ClassNotFoundException, SQLException {
-		int count = 0;
+	// 삭제 메서드
+	public int deleteItem(Item d) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rs = null; 
 		
-		String sql = "SELECT SUM(count) cnt FROM item GROUP BY qnum HAVING qnum = ?"; 
+		String sql = "DELETE FROM item WHERE qnum = ?";
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
 		stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, qnum);
-		rs = stmt.executeQuery();
-		if(rs.next()) {
-			count = rs.getInt("cnt");
-		}
-		return count;
+		stmt.setInt(1, d.getQnum());
+		
+		int row = stmt.executeUpdate();
+		conn.close();
+		return row;
 	}
 }
