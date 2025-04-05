@@ -60,11 +60,11 @@
 			</tr>
 			<tr>
 				<td>시작일</td>
-				<td><input type="date" name="startdate" value="<%=q.getStartdate()%>" readonly></td>
+				<td><input type="date" name="startdate" value="<%=q.getStartdate()%>"></td>
 			</tr>
 			<tr>
 				<td>종료일</td>
-				<td><input type="date" name="enddate" value="<%=q.getEnddate()%>" readonly></td>
+				<td><input type="date" name="enddate" value="<%=q.getEnddate()%>"></td>
 			</tr>
 			<tr>
 				<td>복수투표</td>
