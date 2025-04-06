@@ -4,16 +4,16 @@
 <%@ page import="java.util.*" %>
 
 <%
-	int qnum = Integer.parseInt(request.getParameter("qnum"));
-	System.out.println("updatePollForm.jsp: " + qnum);	
+	int num = Integer.parseInt(request.getParameter("num"));
+	System.out.println("updatePollForm.jsp: " + num);	
 
 	// Model 객체 생성
 	QuestionDao questionDao = new QuestionDao();
 	ItemDao itemDao = new ItemDao();
 	
 	// 해당 num 값을 가지는 데이터 행 조회
-	Question q = questionDao.selectQuestionOne(qnum);
-	ArrayList<Item> itemList = itemDao.selectItemListByQnum(qnum);
+	Question q = questionDao.selectQuestionOne(num);
+	ArrayList<Item> itemList = itemDao.selectItemListByQnum(num);
 	
 	int listSize = itemList.size();
 	// size() -> 콜렉션 객체(ex. Arratlist) 안에 포함된 요소의 개수 반환 
@@ -33,7 +33,7 @@
 	
 	<h1>설문 수정</h1>
 	<form method="post" action="/poll/insertPollAction.jsp">
-		<input type="hidden" name="qnum" value="<%=qnum%>>">
+		<input type="hidden" name="num" value="<%=num%>>">
 		<table border="1">
 			<tr>
 				<td>질문</td>
@@ -60,11 +60,11 @@
 			</tr>
 			<tr>
 				<td>시작일</td>
-				<td><input type="date" name="startdate" value="<%=q.getStartdate()%>"></td>
+				<td><input type="date" name="startdate" value="<%=q.getStartdate()%>" readonly></td>
 			</tr>
 			<tr>
 				<td>종료일</td>
-				<td><input type="date" name="enddate" value="<%=q.getEnddate()%>"></td>
+				<td><input type="date" name="enddate" value="<%=q.getEnddate()%>" readonly></td>
 			</tr>
 			<tr>
 				<td>복수투표</td>

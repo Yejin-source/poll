@@ -109,8 +109,8 @@ public class ItemDao {
 	}
 	
 	
-	// 삭제 메서드
-	public int deleteItem(Item d) throws ClassNotFoundException, SQLException {
+	// 삭제 메서드 | void로 수정
+	public void deleteItem(int qnum) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -119,10 +119,15 @@ public class ItemDao {
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
 		stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, d.getQnum());
+		stmt.setInt(1, qnum);
+		System.out.println(stmt);
 		
 		int row = stmt.executeUpdate();
+		if(row == 1) {
+			System.out.println("ItemDao.deleteItem 삭제 완료");
+		} else {
+			System.out.println("ItemDao.deleteItem 삭제 실패");
+		}
 		conn.close();
-		return row;
 	}
 }
