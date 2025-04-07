@@ -1,12 +1,18 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="dto.*" %>
+<%@ page import="model.*" %>
+<%@ page import="java.util.*" %>
 
-</body>
-</html>
+<%
+	int num = Integer.parseInt(request.getParameter("num"));
+	String enddate = request.getParameter("enddate");
+	System.out.println("updateQuestionEnddateAction.jsp num: " + num);
+	System.out.println("updateQuestionEnddateAction.jsp enddate: " + enddate);
+	
+
+	QuestionDao questionDao = new QuestionDao();
+	questionDao.updateQuestionEnddate(num, enddate);
+	
+	
+	response.sendRedirect("/poll/pollList.jsp");
+%>

@@ -144,7 +144,7 @@
 						<%
 							if(enddate.compareTo(strToday) >= 0) {
 						%>
-								<a href="">종료일 수정</a>
+								<a href='/poll/updateQuestionEnddateForm.jsp?num=<%=map.get("num")%>'>종료일 수정</a>
 						<%		
 							} else {
 						%>

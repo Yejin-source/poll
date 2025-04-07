@@ -133,8 +133,8 @@ public class QuestionDao {
 	}
 	
 	
-	// 삭제 메서드
-	public int deleteQuestion(Question d) throws ClassNotFoundException, SQLException {
+	// 삭제 메서드 | void로 수정
+	public void deleteQuestion(int num) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -143,11 +143,16 @@ public class QuestionDao {
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
 		stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, d.getNum());
+		stmt.setInt(1, num);
+		System.out.println(stmt);
 		
 		int row = stmt.executeUpdate();
+		if(row == 1) {
+			System.out.println("삭제 완료");
+		} else {
+			System.out.println("삭제 실패");
+		}
 		conn.close();
-		return row;
 	}
 	
 	
@@ -173,8 +178,8 @@ public class QuestionDao {
 	}
 	
 	
-	// 종료 날짜 수정 메서드
-	public int updateEnddate(Question ue) throws ClassNotFoundException, SQLException {
+	// 종료일 수정 메서드 | void로 수정
+	public void updateQuestionEnddate(int num, String enddate) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -183,12 +188,11 @@ public class QuestionDao {
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
 		stmt = conn.prepareStatement(sql);
-		stmt.setString(1, ue.getEnddate());
-		stmt.setInt(2, ue.getNum());
+		stmt.setString(1, enddate);
+		stmt.setInt(2, num);
 		
-		int row = stmt.executeUpdate();
+		stmt.executeUpdate();
 		conn.close();
-		return row;
 	}
 	
 }
