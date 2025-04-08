@@ -6,7 +6,7 @@
 	int num = Integer.parseInt(request.getParameter("num"));
 
 	BoardDao boardDao = new BoardDao();
-	// boardDao.deleteBoard(num);
+	boardDao.selectBoardOne(num);
 %>
 
 <!DOCTYPE html>

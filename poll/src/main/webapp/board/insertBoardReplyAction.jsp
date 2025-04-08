@@ -21,8 +21,8 @@
 	
 	// 답글에 필요한 속성
 	board.setRef(ref);
-	board.setRef(pos);
-	board.setRef(depth);
+	board.setPos(pos);
+	board.setDepth(depth);
 	
 	board.setPass(pass);
 	board.setIp(request.getRemoteAddr()); // 다른 API를 이용해서 IP를 구하는 경우가 많음

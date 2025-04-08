@@ -14,6 +14,7 @@
 	p.setCurrentPage(currentPage);
 	p.setRowPerPage(10);
 	ArrayList<Board> list = boardDao.selectBoardList(p);
+	System.out.println(list.size());
 %>
 
 <!DOCTYPE html>
@@ -53,6 +54,12 @@
 								for(int i=0; i<=b.getDepth(); i++) {
 							%>
 									&nbsp; &nbsp; &nbsp; &nbsp; 
+							<%
+								}
+							
+								if (b.getDepth() > 0) {
+							%>
+									ㄴ
 							<%
 								}
 							%>
