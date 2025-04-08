@@ -12,6 +12,7 @@ import dto.Board;
 import dto.Paging;
 
 public class BoardDao {
+	// 페이징, 전체 내용 가져오는 메서드
 	public ArrayList<Board> selectBoardList(Paging p) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
@@ -38,6 +39,39 @@ public class BoardDao {
 		}
 		conn.close();
 		return list;
+	}
+	
+	
+	// 상세보기 메서드
+	public Board selectBoardOne(int num) throws ClassNotFoundException, SQLException {
+		Board b = null;
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String sql = "SELECT * FROM board WHERE num = ?";
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, num);
+		rs = stmt.executeQuery();
+		
+		// rs -> board
+		if(rs.next()) {
+			b = new Board();
+			b.setNum(rs.getInt("num"));
+			b.setName(rs.getString("name"));
+			b.setSubject(rs.getString("subject"));
+			b.setContent(rs.getString("content"));
+			b.setPos(rs.getInt("pos"));
+			b.setRef(rs.getInt("ref"));
+			b.setDepth(rs.getInt("depth"));
+			b.setRegdate(rs.getString("regdate"));
+			b.setIp(rs.getString("ip"));
+			b.setCount(rs.getInt("count"));
+		}
+		conn.close();
+		return b;
 	}
 	
 
@@ -105,10 +139,10 @@ public class BoardDao {
 				int row2 = stmt2.executeUpdate();
 		
 		// 답글 입력
-		PreparedStatement stmt = null;
 		String sql = "INSERT INTO board(name, subject, content, ref, pos, depth, pass, ip) VALUES (?,?,?,?,?,?,?,?)";
+		PreparedStatement stmt = null;
 		
-		stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); // ref==0인 경우 입력 직후 pk를 반환받기 위해서
+		stmt = conn.prepareStatement(sql); // ref==0인 경우 입력 직후 pk를 반환받기 위해서
 		stmt.setString(1, b.getName());
 		stmt.setString(2, b.getSubject());
 		stmt.setString(3, b.getContent());
@@ -127,33 +161,68 @@ public class BoardDao {
 	}
 	
 	
-	public Board selectBoardOne(int num) throws ClassNotFoundException, SQLException {
-		Board b = null;
-		
+	// 수정 메서드
+	public void updateBoard(Board u) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		String sql = "SELECT * FROM board WHERE num = ?";
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
-		stmt = conn.prepareStatement(sql);
-		stmt.setInt(1, num);
-		rs = stmt.executeQuery();
 		
-		// rs -> board
-		if(rs.next()) {
-			b = new Board();
-			b.setNum(rs.getInt("num"));
-			b.setName(rs.getString("name"));
-			b.setSubject(rs.getString("subject"));
-			b.setPos(rs.getInt("pos"));
-			b.setRef(rs.getInt("ref"));
-			b.setDepth(rs.getInt("depth"));
-			b.setRegdate(rs.getString("regdate"));
-			b.setIp(rs.getString("ip"));
-			b.setCount(rs.getInt("count"));
+		String sql = "UPDATE board SET name = ?, subject = ?, content = ? WHERE num = ?";
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
+		
+		stmt = conn.prepareStatement(sql);
+		stmt.setString(1, u.getName());
+		stmt.setString(2, u.getSubject());
+		stmt.setString(3, u.getContent());
+		stmt.setInt(4, u.getNum());
+		System.out.println("BoardDao.java updateBoard stmt: " + stmt);
+		
+		int row = stmt.executeUpdate();
+		if(row == 1) {
+			System.out.println("수정 완료");
+		} else {
+			System.out.println("수정 실패");
 		}
 		conn.close();
-		return b;
 	}
+	
+	
+	// 삭제 메서드
+	public void deleteBoard(Board d) throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		// 비밀번호가 일치하면 바뀌는 것으로 수정
+		String sql = "DELETE FROM board WHERE num = ? AND pass = ?";
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
+		
+		stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, d.getNum());
+		stmt.setString(2, d.getPass());
+		System.out.println("BoardDao.java deleteBoard stmt: " + stmt);
+		
+		int row = stmt.executeUpdate();
+		if(row == 1) {
+			System.out.println("삭제 완료");
+		} else {
+			System.out.println("삭제 실패");
+		}
+		conn.close();
+	}
+	
+	
+	/*
+	 	int 매개변수 VS Board 객체 매개변수 
+	 	
+	 	int 매개변수
+	 	특정 값만 전달하고 처리함 
+	 	단순한 숫자 하나만 전달 
+	   	추가적인 데이터가 필요할 경우 메서드를 수정해야 함
+	   	
+	   	객체 매개변수
+	   	여러 관련된 데이터를 하나의 객체로 묶어서 전달함
+	   	객체 안에 여러 데이터(속성)가 들어있음
+	   	메서드를 변경하지 않아도 객체 속성을 추가해서 사용 가능함
+	 */
 }

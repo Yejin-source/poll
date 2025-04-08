@@ -162,7 +162,7 @@ public class QuestionDao {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		
-		String sql = "UPDATE question SET title = ? startdate = ? enddate = ? type = ? WHERE num = ?";
+		String sql = "UPDATE question SET title = ?, startdate = ?, enddate = ?, type = ? WHERE num = ?";
 		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
 		
 		stmt = conn.prepareStatement(sql);

@@ -56,8 +56,7 @@
 							<%
 								}
 							%>
-						</td>
-						<td>
+			
 							<a href="/poll/board/boardOne.jsp?num=<%=b.getNum()%>">
 								<%=b.getSubject()%>
 							</a>

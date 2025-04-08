@@ -6,6 +6,9 @@
 	pos = pos + 1;
 	int depth = Integer.parseInt(request.getParameter("depth"));
 	depth = depth + 1;
+	
+	System.out.println("pos: " + pos);
+	System.out.println("depth: " + depth);
 %>
 
 <!DOCTYPE html>

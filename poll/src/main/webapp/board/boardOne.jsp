@@ -21,8 +21,13 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="container">
+	<!-- nav.jsp 인클루드 -->
+	<div>
+		<jsp:include page="/inc/nav.jsp"></jsp:include>
+	</div>
+	
 	<h1>board one</h1>
-	<table class = "table table-bordered table-hover">
+	<table class="table table-bordered table-hover">
 		<tr>
 	         <td>num</td>
 	         <td><%=b.getNum()%></td>
@@ -40,15 +45,15 @@
 	         <td><%=b.getContent()%></td>
 	      </tr>
 	      <tr>
-	         <td>pos</td>
-	         <td><%=b.getPos()%></td>
-	      </tr>
-	      <tr>
-	         <td>ref</td>
+	         <td>ref</td> <!-- 최상위 부모글의 num -->
 	         <td><%=b.getRef()%></td>
 	      </tr>
 	      <tr>
-	         <td>depth</td>
+	         <td>pos</td> <!-- 같은 ref에서 출력 순서 결정 -->
+	         <td><%=b.getPos()%></td>
+	      </tr>
+	      <tr>
+	         <td>depth</td> <!-- 리스트 출력 시 들여쓰기에 사용 -->
 	         <td><%=b.getDepth()%></td>
 	      </tr>
 	      <tr>
@@ -64,8 +69,8 @@
 	         <td><%=b.getCount()%></td>
 	      </tr>
 	</table>
-	<a href="">수정</a>
-	<a href="">삭제</a>
+	<a href="/poll/board/updateBoardReplyForm.jsp?num=<%=b.getNum()%>">수정</a>
+	<a href="/poll/board/deleteBoardForm.jsp?num=<%=b.getNum()%>">삭제</a>
 	<a href="/poll/board/insertBoardReplyForm.jsp?ref=<%=b.getRef()%>&pos=<%=b.getPos()%>&depth=<%=b.getDepth()%>">답글 달기</a>
 </body>
 </html>
