@@ -41,10 +41,8 @@ public class BoardDao {
 	}
 	
 
+	// 새 글 입력(부모글)
 	public void insertBoard(Board b) throws ClassNotFoundException, SQLException {
-		// 답글 입력
-		
-		// 새 글 입력(부모글)
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -89,6 +87,46 @@ public class BoardDao {
 	}
 	
 	
+	// 답글 입력
+	public void insertBoardReply(Board b) throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection conn = null;
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/poll", "root", "java1234");
+		
+		// 트랜잭션(2개 이상의 (CUD)쿼리 한 묶음처럼 처리하고자 할 때
+		conn.setAutoCommit(false); // executeUpdate()시마다 자동 커밋기능을 false
+		
+		// ref가 같고 pos값이 현재글보다 크거나 같다면 pos = pos+1
+				PreparedStatement stmt2 = null;
+				String sql2 = "UPDATE board SET pos = pos+1 WHERE ref=? AND pos >= ?";
+				stmt2 = conn.prepareStatement(sql2);
+				stmt2.setInt(1, b.getRef());
+				stmt2.setInt(2, b.getPos());
+				int row2 = stmt2.executeUpdate();
+		
+		// 답글 입력
+		PreparedStatement stmt = null;
+		String sql = "INSERT INTO board(name, subject, content, ref, pos, depth, pass, ip) VALUES (?,?,?,?,?,?,?,?)";
+		
+		stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); // ref==0인 경우 입력 직후 pk를 반환받기 위해서
+		stmt.setString(1, b.getName());
+		stmt.setString(2, b.getSubject());
+		stmt.setString(3, b.getContent());
+		
+		stmt.setInt(4, b.getRef());
+		stmt.setInt(5, b.getPos());
+		stmt.setInt(6, b.getDepth());
+		
+		stmt.setString(7, b.getPass());
+		stmt.setString(8, b.getIp());
+		
+		int row = stmt.executeUpdate(); 
+		
+		conn.commit(); // conn.setAutoCommit(false); 코드 때문에 필요함
+		conn.close();
+	}
+	
+	
 	public Board selectBoardOne(int num) throws ClassNotFoundException, SQLException {
 		Board b = null;
 		
@@ -111,6 +149,8 @@ public class BoardDao {
 			b.setPos(rs.getInt("pos"));
 			b.setRef(rs.getInt("ref"));
 			b.setDepth(rs.getInt("depth"));
+			b.setRegdate(rs.getString("regdate"));
+			b.setIp(rs.getString("ip"));
 			b.setCount(rs.getInt("count"));
 		}
 		conn.close();
