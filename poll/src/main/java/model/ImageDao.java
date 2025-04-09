@@ -42,6 +42,7 @@ public class ImageDao {
 		stmt= conn.prepareStatement(sql); 
 		stmt.setInt(1, p.getBeginRow());
 		stmt.setInt(2, p.getRowPerPage());
+		rs = stmt.executeQuery();
 		while(rs.next()) {
 			Image img = new Image();
 			img.setNum(rs.getInt("num"));
@@ -50,8 +51,6 @@ public class ImageDao {
 			img.setCreatedate(rs.getString("createdate"));
 			list.add(img);
 		}
-		
-		rs = stmt.executeQuery();
 		return list;
 	}
 	

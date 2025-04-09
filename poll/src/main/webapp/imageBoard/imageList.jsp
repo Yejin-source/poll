@@ -16,7 +16,6 @@
 	p.setCurrentPage(currentPage);
 	p.setRowPerPage(10);
 	ArrayList<Image> list = imageDao.selectImageList(p);
-	System.out.println(list.size());
 %>
 
 <!DOCTYPE html>
@@ -35,12 +34,12 @@
 				</tr>
 				<tr>
 					<td>
-						<img src="/poll/upload<%=i.getFilename()%>">
+						<img src="/poll/upload/<%=i.getFilename()%>">
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<a href="/poll/image/deleteImage.jsp?num=<%=i.getNum()%>&filename=<%=i.getFilename()%>">삭제</a>
+						<a href="/poll/imageBoard/deleteImage.jsp?num=<%=i.getNum()%>&filename=<%=i.getFilename()%>">삭제</a>
 					</td>
 				</tr>
 			</table>
